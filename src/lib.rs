@@ -86,9 +86,14 @@ pub enum Command {
 #[non_exhaustive]
 pub struct VCodeSig;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[non_exhaustive]
-pub enum Device {}
+pub enum Device {
+    Motor {
+        physical_gearset: MotorGearset,
+        moment_of_inertia: f64,
+    },
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[non_exhaustive]
