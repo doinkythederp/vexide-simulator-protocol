@@ -1,3 +1,4 @@
+use base64::{prelude::*, DecodeError};
 use serde::{Deserialize, Serialize};
 use std::{num::NonZeroU16, path::PathBuf};
 
@@ -82,9 +83,19 @@ pub enum Command {
     },
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[non_exhaustive]
-pub struct VCodeSig;
+pub struct VCodeSig(pub String);
+
+impl VCodeSig {
+    pub fn new(bytes: &[u8]) -> Self {
+        Self(BASE64_STANDARD.encode(bytes))
+    }
+
+    pub fn to_bytes(&self) -> Result<Vec<u8>, DecodeError> {
+        BASE64_STANDARD.decode(&self.0)
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[non_exhaustive]
@@ -111,7 +122,8 @@ pub enum DrawCommand {
         top_left: Point,
         bottom_right: Point,
         stride: NonZeroU16,
-        buffer: Vec<Color>,
+        /// Base64 string
+        buffer: String,
     },
 }
 
