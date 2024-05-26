@@ -149,13 +149,14 @@ pub struct Point {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum DeviceStatus {
     Motor {
         velocity: f64,
         reversed: bool,
         power_draw: f64,
         torque_output: f64,
-        flags: MotorFlags,
+        flags: i32,
         position: f64,
         target_position: f64,
         voltage: f64,
@@ -177,10 +178,6 @@ pub enum MotorBrakeMode {
     Brake,
     Hold,
 }
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
-#[non_exhaustive]
-pub struct MotorFlags;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum LinkMode {
