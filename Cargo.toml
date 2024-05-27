@@ -5,6 +5,7 @@ version = "0.1.0"
 edition = "2021"
 homepage = "https://vexide.dev"
 repository = "https://github.com/vexide/simulator-protocol"
+license = "MIT"
 
 [dependencies]
 base64 = { version = "0.22.1" }
