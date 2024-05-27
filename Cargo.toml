@@ -1,7 +1,10 @@
 [package]
 name = "vexide-simulator-protocol"
+description = "JSON-based protocol enabling communication between VEX robot simulators and user-facing frontends"
 version = "0.1.0"
 edition = "2021"
+homepage = "https://vexide.dev"
+repository = "https://github.com/vexide/simulator-protocol"
 
 [dependencies]
 base64 = { version = "0.22.1" }
