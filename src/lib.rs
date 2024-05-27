@@ -1,12 +1,29 @@
+//! The Vexide Simulator Protocol enables communication between VEX robot simulators and user-facing frontends using a JSON-based protocol.
+//!
+//! The code executor and frontend communicate over a stream in [newline-delimited JSON format](https://jsonlines.org/).
+//!
+//! The backend sends [`Event`]s which represent a change in simulator state.
+//! These are used by the frontend to correctly display the state of the simulated program.
+//!
+//! The frontend sends [`Command`]s to the code executor to control the robot code environment, simulating changes in robot hardware (like controller input and LCD touch events) or competition phase.
+//!
+//! The full protocol is documented at <https://internals.vexide.dev/simulators/protocol>.
+
 use base64::{prelude::*, DecodeError};
 use serde::{Deserialize, Serialize};
 use std::{num::NonZeroU16, path::PathBuf};
 
+/// A message sent from the simulator to the frontend.
 #[derive(Debug, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub enum Event {
+    Handshake {
+        version: i32,
+        extensions: Vec<String>,
+    },
     ScreenDraw {
         command: DrawCommand,
         color: Color,
+        background: Color,
     },
     ScreenClear {
         color: Color,
@@ -47,8 +64,13 @@ pub enum Event {
     },
 }
 
+/// A message sent from the frontend to the simulator.
 #[derive(Debug, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub enum Command {
+    Handshake {
+        version: i32,
+        extensions: Vec<String>,
+    },
     Touch {
         pos: Point,
         event: TouchEvent,
@@ -83,8 +105,8 @@ pub enum Command {
     },
 }
 
+/// Base64-encoded program metadata.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
-#[non_exhaustive]
 pub struct VCodeSig(pub String);
 
 impl VCodeSig {
@@ -97,6 +119,7 @@ impl VCodeSig {
     }
 }
 
+/// The configuration of a V5 peripheral.
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[non_exhaustive]
 pub enum Device {
@@ -106,10 +129,12 @@ pub enum Device {
     },
 }
 
+/// The current state of the robot as a whole.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct RobotState;
 
+/// An instruction for drawing to the robot LCD screen.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum DrawCommand {
     Fill {
@@ -127,6 +152,7 @@ pub enum DrawCommand {
     },
 }
 
+/// A shape that can be drawn to the robot LCD screen.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Shape {
     Rectangle {
@@ -142,12 +168,14 @@ pub enum Shape {
     },
 }
 
+/// A pixel with X and Y coordinates.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Point {
     pub x: i16,
     pub y: i16,
 }
 
+/// The current state of a V5 peripheral.
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[non_exhaustive]
 pub enum DeviceStatus {
@@ -165,6 +193,7 @@ pub enum DeviceStatus {
     },
 }
 
+/// The gearset of a VEX V5 motor.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum MotorGearset {
     Red,
@@ -172,6 +201,7 @@ pub enum MotorGearset {
     Blue,
 }
 
+/// The brake mode of a VEX V5 motor.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum MotorBrakeMode {
     Coast,
@@ -179,12 +209,14 @@ pub enum MotorBrakeMode {
     Hold,
 }
 
+/// The mode of a [VEXlink](https://drive.google.com/file/d/13mTA6BT7CPskJzh4YgsfAfoH9OgK75Hn/view)-configured radio.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum LinkMode {
     Manager,
     Worker,
 }
 
+/// The gearset of a VEX V5 motor.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum TouchEvent {
     Released,
@@ -192,24 +224,29 @@ pub enum TouchEvent {
     Held,
 }
 
+/// An arbitrary port on the VEX V5.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Port {
     Smart(SmartPort),
     Adi(AdiPort),
 }
 
+/// An RJ9 4p4c "Smart" port on the VEX V5.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct SmartPort(pub u8);
 
+/// A 3-wire "ADI" port for analog devices.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct AdiPort(pub u8);
 
+/// The current stage of a competition.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum CompMode {
     Auto,
     Driver,
 }
 
+/// An RGB color.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Color {
     pub r: u8,
@@ -217,6 +254,7 @@ pub struct Color {
     pub b: u8,
 }
 
+/// The importance level of a log message.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum LogLevel {
     Trace,
@@ -225,6 +263,7 @@ pub enum LogLevel {
     Error,
 }
 
+/// Battery status and statistics.
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct Battery {
     pub voltage: f64,
@@ -232,15 +271,17 @@ pub struct Battery {
     pub capacity: f64,
 }
 
+/// A method of retrieving a controller's current state.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ControllerUpdate {
     /// Implementors can send raw controller state to the simulator,
     /// allowing for keyboard-and-mouse-based control.
     Raw(ControllerState),
-    /// Or, they can send the UUID of a physical controller (more efficient and allows for SDL2 mappings).
+    /// Implementors can can send the UUID of a physical controller (more efficient and allows for SDL2 mappings).
     UUID(String),
 }
 
+/// The raw state of a VEX V5 controller.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct ControllerState {
     pub axis1: i32,
@@ -265,14 +306,3 @@ pub struct ControllerState {
     pub flags: i32,
     pub battery_capacity: i32,
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-
-//     #[test]
-//     fn it_works() {
-//         let result = add(2, 2);
-//         assert_eq!(result, 4);
-//     }
-// }
