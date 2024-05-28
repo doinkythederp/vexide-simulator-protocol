@@ -79,7 +79,7 @@ pub enum Command {
         pos: Point,
         event: TouchEvent,
     },
-    ControllerUpdate(ControllerUpdate),
+    ControllerUpdate(Option<ControllerUpdate>, Option<ControllerUpdate>),
     USD {
         root: Option<PathBuf>,
     },
@@ -91,6 +91,7 @@ pub enum Command {
         port: SmartPort,
     },
     CompetitionMode {
+        enabled: bool,
         connected: bool,
         mode: CompMode,
         is_competition: bool,
