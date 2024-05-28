@@ -62,6 +62,10 @@ pub enum Event {
     VEXLinkDisconnect {
         port: SmartPort,
     },
+    TextMetricsRequest {
+        text: String,
+        options: V5Text,
+    },
 }
 
 /// A message sent from the frontend to the simulator.
@@ -102,6 +106,11 @@ pub enum Command {
     StartExecution,
     SetBatteryCapacity {
         capacity: f64,
+    },
+    SetTextMetrics {
+        text: String,
+        options: V5Text,
+        metrics: TextMetrics,
     },
 }
 
@@ -150,6 +159,44 @@ pub enum DrawCommand {
         /// Base64 string
         buffer: String,
     },
+    Write {
+        text: V5Text,
+        coordinates: Point,
+    },
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
+pub struct V5Text {
+    pub data: String,
+    pub font_family: V5FontFamily,
+    pub font_size: V5FontSize,
+}
+
+#[derive(
+    Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord,
+)]
+pub enum V5FontFamily {
+    #[default]
+    UserMono,
+    TimerMono,
+}
+
+#[derive(
+    Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord,
+)]
+pub enum V5FontSize {
+    Small,
+    #[default]
+    Normal,
+    Large,
+}
+
+#[derive(
+    Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord,
+)]
+pub struct TextMetrics {
+    width: usize,
+    height: usize,
 }
 
 /// A shape that can be drawn to the robot LCD screen.
