@@ -66,8 +66,7 @@ pub enum Event {
         port: SmartPort,
     },
     TextMetricsRequest {
-        text: String,
-        options: V5Text,
+        text: V5Text,
     },
 }
 
@@ -112,8 +111,7 @@ pub enum Command {
         capacity: f64,
     },
     SetTextMetrics {
-        text: String,
-        options: V5Text,
+        text: V5Text,
         metrics: TextMetrics,
     },
 }
