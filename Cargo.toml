@@ -9,4 +9,5 @@ license = "MIT"
 
 [dependencies]
 base64 = { version = "0.22.1" }
+mint = { version = "0.5.9", features = ["serde"] }
 serde = { version = "1.0.201", features = ["derive"] }

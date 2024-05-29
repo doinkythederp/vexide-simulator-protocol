@@ -10,6 +10,7 @@
 //! The full protocol is documented at <https://internals.vexide.dev/simulators/protocol>.
 
 use base64::{prelude::*, DecodeError};
+use mint::Point2;
 use serde::{Deserialize, Serialize};
 use std::{num::NonZeroU16, path::PathBuf};
 
@@ -76,7 +77,7 @@ pub enum Command {
         extensions: Vec<String>,
     },
     Touch {
-        pos: Point,
+        pos: Point2<i16>,
         event: TouchEvent,
     },
     ControllerUpdate(Option<ControllerUpdate>, Option<ControllerUpdate>),
@@ -154,15 +155,15 @@ pub enum DrawCommand {
         shape: Shape,
     },
     CopyBuffer {
-        top_left: Point,
-        bottom_right: Point,
+        top_left: Point2<i16>,
+        bottom_right: Point2<i16>,
         stride: NonZeroU16,
         /// Base64 string
         buffer: String,
     },
     Write {
         text: V5Text,
-        coordinates: Point,
+        coordinates: Point2<i16>,
     },
 }
 
@@ -204,23 +205,16 @@ pub struct TextMetrics {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Shape {
     Rectangle {
-        top_left: Point,
-        bottom_right: Point,
+        top_left: Point2<i16>,
+        bottom_right: Point2<i16>,
     },
     Circle {
-        center: Point,
+        center: Point2<i16>,
         radius: u16,
     },
     Pixel {
-        pos: Point,
+        pos: Point2<i16>,
     },
-}
-
-/// A pixel with X and Y coordinates.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct Point {
-    pub x: i16,
-    pub y: i16,
 }
 
 /// The current state of a V5 peripheral.
