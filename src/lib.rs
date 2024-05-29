@@ -12,6 +12,7 @@
 
 use base64::{prelude::*, DecodeError};
 use mint::Point2;
+use rgb::RGB8;
 use serde::{Deserialize, Serialize};
 use std::{num::NonZeroU16, path::PathBuf};
 
@@ -24,11 +25,11 @@ pub enum Event {
     },
     ScreenDraw {
         command: DrawCommand,
-        color: Color,
-        background: Color,
+        color: RGB8,
+        background: RGB8,
     },
     ScreenClear {
-        color: Color,
+        color: RGB8,
     },
     ScreenDoubleBufferMode {
         enable: bool,
@@ -287,14 +288,6 @@ pub struct AdiPort(pub u8);
 pub enum CompMode {
     Auto,
     Driver,
-}
-
-/// An RGB color.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct Color {
-    pub r: u8,
-    pub g: u8,
-    pub b: u8,
 }
 
 /// The importance level of a log message.
