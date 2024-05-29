@@ -8,6 +8,7 @@
 //! The frontend sends [`Command`]s to the code executor to control the robot code environment, simulating changes in robot hardware (like controller input and LCD touch events) or competition phase.
 //!
 //! The full protocol is documented at <https://internals.vexide.dev/simulators/protocol>.
+#![deny(rust_2018_compatibility, rust_2018_idioms, unsafe_code)]
 
 use base64::{prelude::*, DecodeError};
 use mint::Point2;
