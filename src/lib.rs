@@ -197,8 +197,8 @@ pub enum V5FontSize {
     Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord,
 )]
 pub struct TextMetrics {
-    width: usize,
-    height: usize,
+    pub width: usize,
+    pub height: usize,
 }
 
 /// A shape that can be drawn to the robot LCD screen.
