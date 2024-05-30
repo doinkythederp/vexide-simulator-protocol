@@ -78,7 +78,7 @@ pub enum Command {
         extensions: Vec<String>,
     },
     Touch {
-        pos: Point2<i16>,
+        pos: Point2<i32>,
         event: TouchEvent,
     },
     ControllerUpdate(Option<ControllerUpdate>, Option<ControllerUpdate>),
@@ -155,15 +155,15 @@ pub enum DrawCommand {
         shape: Shape,
     },
     CopyBuffer {
-        top_left: Point2<i16>,
-        bottom_right: Point2<i16>,
+        top_left: Point2<i32>,
+        bottom_right: Point2<i32>,
         stride: NonZeroU16,
         /// Base64 string
         buffer: String,
     },
     Write {
         text: V5Text,
-        coordinates: Point2<i16>,
+        coordinates: Point2<i32>,
     },
 }
 
@@ -205,15 +205,15 @@ pub struct TextMetrics {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Shape {
     Rectangle {
-        top_left: Point2<i16>,
-        bottom_right: Point2<i16>,
+        top_left: Point2<i32>,
+        bottom_right: Point2<i32>,
     },
     Circle {
-        center: Point2<i16>,
+        center: Point2<i32>,
         radius: u16,
     },
     Pixel {
-        pos: Point2<i16>,
+        pos: Point2<i32>,
     },
 }
 
