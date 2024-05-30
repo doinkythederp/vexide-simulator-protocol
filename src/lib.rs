@@ -163,8 +163,23 @@ pub enum DrawCommand {
     },
     Write {
         text: V5Text,
-        coordinates: Point2<i32>,
+        location: TextLocation,
+        opaque: bool,
     },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
+pub enum TextLocation {
+    Coordinates { point: Point2<i32> },
+    Line { line: i32 },
+}
+
+impl Default for TextLocation {
+    fn default() -> Self {
+        Self::Coordinates {
+            point: Point2 { x: 0, y: 0 },
+        }
+    }
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
