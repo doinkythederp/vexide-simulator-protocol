@@ -28,6 +28,10 @@ pub enum Event {
         color: Color,
         background: Color,
     },
+    ScreenScroll {
+        location: ScrollLocation,
+        lines: i32,
+    },
     ScreenClear {
         color: Color,
     },
@@ -211,6 +215,17 @@ impl Default for TextLocation {
             point: Point2 { x: 0, y: 0 },
         }
     }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
+pub enum ScrollLocation {
+    Line {
+        line: i32,
+    },
+    Rectangle {
+        top_left: Point2<i32>,
+        bottom_right: Point2<i32>,
+    },
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
