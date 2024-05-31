@@ -38,10 +38,7 @@ pub enum Event {
     VCodeSig(VCodeSig),
     Ready,
     Exited,
-    Serial {
-        channel: i32,
-        data: Vec<u8>,
-    },
+    Serial(SerialData),
     DeviceUpdate {
         status: DeviceStatus,
         port: Port,
@@ -92,12 +89,7 @@ pub enum Command {
     VEXLinkClosed {
         port: SmartPort,
     },
-    CompetitionMode {
-        enabled: bool,
-        connected: bool,
-        mode: CompMode,
-        is_competition: bool,
-    },
+    CompetitionMode(CompetitionMode),
     ConfigureDevice {
         port: Port,
         device: Device,
@@ -114,6 +106,34 @@ pub enum Command {
         text: V5Text,
         metrics: TextMetrics,
     },
+    Serial(SerialData),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct SerialData {
+    pub channel: i32,
+    pub data: String,
+}
+
+impl SerialData {
+    pub fn new(channel: i32, bytes: &[u8]) -> Self {
+        Self {
+            channel,
+            data: BASE64_STANDARD.encode(bytes),
+        }
+    }
+
+    pub fn to_bytes(&self) -> Result<Vec<u8>, DecodeError> {
+        BASE64_STANDARD.decode(&self.data)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize, Default)]
+pub struct CompetitionMode {
+    enabled: bool,
+    connected: bool,
+    mode: CompMode,
+    is_competition: bool,
 }
 
 /// Base64-encoded program metadata.
@@ -297,9 +317,12 @@ pub struct SmartPort(pub u8);
 pub struct AdiPort(pub u8);
 
 /// The current stage of a competition.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize, Default,
+)]
 pub enum CompMode {
     Auto,
+    #[default]
     Driver,
 }
 
