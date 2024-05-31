@@ -111,12 +111,12 @@ pub enum Command {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct SerialData {
-    pub channel: i32,
+    pub channel: u32,
     pub data: String,
 }
 
 impl SerialData {
-    pub fn new(channel: i32, bytes: &[u8]) -> Self {
+    pub fn new(channel: u32, bytes: &[u8]) -> Self {
         Self {
             channel,
             data: BASE64_STANDARD.encode(bytes),
@@ -128,14 +128,23 @@ impl SerialData {
     }
 }
 
-#[derive(
-    Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize, Default,
-)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct CompetitionMode {
     enabled: bool,
     connected: bool,
     mode: CompMode,
     is_competition: bool,
+}
+
+impl Default for CompetitionMode {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            connected: false,
+            mode: CompMode::Driver,
+            is_competition: false,
+        }
+    }
 }
 
 /// Base64-encoded program metadata.
