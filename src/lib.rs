@@ -130,10 +130,10 @@ impl SerialData {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct CompetitionMode {
-    enabled: bool,
-    connected: bool,
-    mode: CompMode,
-    is_competition: bool,
+    pub enabled: bool,
+    pub connected: bool,
+    pub mode: CompMode,
+    pub is_competition: bool,
 }
 
 impl Default for CompetitionMode {
