@@ -25,11 +25,11 @@ pub enum Event {
     },
     ScreenDraw {
         command: DrawCommand,
-        color: RGB8,
-        background: RGB8,
+        color: Color,
+        background: Color,
     },
     ScreenClear {
-        color: RGB8,
+        color: Color,
     },
     ScreenDoubleBufferMode {
         enable: bool,
@@ -377,4 +377,22 @@ pub struct ControllerState {
     pub button_all: bool,
     pub flags: i32,
     pub battery_capacity: i32,
+}
+
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize, Default,
+)]
+pub struct Color(pub u32);
+
+impl From<RGB8> for Color {
+    fn from(rgb: RGB8) -> Self {
+        Self(u32::from_be_bytes([0, rgb.r, rgb.g, rgb.b]))
+    }
+}
+
+impl From<Color> for RGB8 {
+    fn from(color: Color) -> Self {
+        let [_, r, g, b] = color.0.to_be_bytes();
+        RGB8 { r, g, b }
+    }
 }
