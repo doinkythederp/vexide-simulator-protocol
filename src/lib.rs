@@ -26,11 +26,11 @@ pub enum Event {
     ScreenDraw {
         command: DrawCommand,
         color: Color,
-        background: Color,
     },
     ScreenScroll {
         location: ScrollLocation,
         lines: i32,
+        background: Color,
     },
     ScreenClear {
         color: Color,
@@ -200,6 +200,7 @@ pub enum DrawCommand {
         text: V5Text,
         location: TextLocation,
         opaque: bool,
+        background: Color,
     },
 }
 
