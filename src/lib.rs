@@ -26,11 +26,15 @@ pub enum Event {
     ScreenDraw {
         command: DrawCommand,
         color: Color,
+        /// The region of the screen that may be mutated.
+        clip_region: Rect,
     },
     ScreenScroll {
         location: ScrollLocation,
         lines: i32,
         background: Color,
+        /// The region of the screen that may be mutated.
+        clip_region: Rect,
     },
     ScreenClear {
         color: Color,
@@ -426,4 +430,10 @@ impl From<Color> for RGB8 {
         let [_, r, g, b] = color.0.to_be_bytes();
         RGB8 { r, g, b }
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct Rect {
+    pub top_left: Point2<i32>,
+    pub bottom_right: Point2<i32>,
 }
