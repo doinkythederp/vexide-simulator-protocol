@@ -38,6 +38,8 @@ pub enum Event {
     },
     ScreenClear {
         color: Color,
+        /// The region of the screen that may be mutated.
+        clip_region: Rect,
     },
     ScreenDoubleBufferMode {
         enable: bool,
