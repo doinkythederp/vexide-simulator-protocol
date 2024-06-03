@@ -277,6 +277,10 @@ pub enum Shape {
     Pixel {
         pos: Point2<i32>,
     },
+    Line {
+        start: Point2<i32>,
+        end: Point2<i32>,
+    },
 }
 
 /// The current state of a V5 peripheral.
