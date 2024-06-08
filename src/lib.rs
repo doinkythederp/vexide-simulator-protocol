@@ -391,7 +391,9 @@ pub enum ControllerUpdate {
 }
 
 /// The raw state of a VEX V5 controller.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize, Default,
+)]
 pub struct ControllerState {
     pub axis1: i32,
     pub axis2: i32,
